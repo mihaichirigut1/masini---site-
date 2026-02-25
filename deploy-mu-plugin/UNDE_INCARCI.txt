@@ -1,0 +1,25 @@
+============================================
+  UNDE ÎNCARCI FIȘIERUL (1 singur pas)
+============================================
+
+1. Intră pe hosting (cPanel File Manager sau FTP: FileZilla, WinSCP).
+
+2. Mergi la folderul:
+   wp-content/mu-plugins
+
+   (Dacă nu există "mu-plugins", creează un folder nou cu acest nume în "wp-content".)
+
+3. Încarcă în "mu-plugins" fișierul:
+   mu-plugin-masini-mobile-cautare-jos.php
+
+   (Acest fișier este în același folder cu acest text.)
+
+4. Gata. Nu trebuie să activezi nimic – mu-plugins se încarcă singur.
+
+5. Reîmprospătează pe telefon pagina "Masini de vânzare".
+   Căutarea ar trebui să apară JOS, sub mașini.
+
+============================================
+  Revenire (dacă vrei cum era înainte)
+============================================
+Șterge fișierul mu-plugin-masini-mobile-cautare-jos.php din wp-content/mu-plugins.

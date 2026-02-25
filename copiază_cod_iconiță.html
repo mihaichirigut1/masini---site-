@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copiază cod iconiță căutare</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #d32f2f; font-size: 22px; }
+        p { color: #333; line-height: 1.5; }
+        textarea { width: 100%; height: 320px; font-family: Consolas, monospace; font-size: 12px; padding: 10px; box-sizing: border-box; margin: 15px 0; border: 2px solid #d32f2f; border-radius: 6px; }
+        .btn { display: inline-block; background: #d32f2f; color: white; padding: 14px 28px; font-size: 18px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin: 10px 0; }
+        .btn:hover { background: #b71c1c; }
+        .ok { background: #2e7d32; color: white; padding: 8px 14px; border-radius: 4px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Cod pentru iconița de căutare (Elementor)</h1>
+    <p><strong>Pași:</strong></p>
+    <ol>
+        <li>Apasă butonul <strong>„Copiază codul”</strong> de mai jos.</li>
+        <li>Mergi în WordPress → Elementor → Theme Builder → Header (editează header-ul).</li>
+        <li>În dreapta, la <strong>Structure</strong>, dă click pe <strong>HTML</strong> (sub Header).</li>
+        <li>În stânga, în caseta <strong>HTML Code</strong>, dă un click în zona albă (unde e codul), apoi apasă <strong>Ctrl+V</strong> (lipire).</li>
+        <li>Apasă <strong>Update</strong> / <strong>Publish</strong>.</li>
+    </ol>
+    <textarea id="cod" readonly><!-- Iconiță căutare – în header, doar mobil pe Home + Mașini de vânzare -->
+<div id="mobile-search-icon" style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: #d32f2f; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.2s; -webkit-tap-highlight-color: transparent;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
+        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
+
+<!-- Overlay filtre -->
+<div id="mobile-search-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100000; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+    <div style="background: white; min-height: 100%; padding: 20px; max-width: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #d32f2f;">
+            <h2 style="margin: 0; color: #d32f2f; font-size: 24px;">CAUTĂ MAȘINI</h2>
+            <button id="close-search-overlay" type="button" style="background: none; border: none; font-size: 32px; color: #666; cursor: pointer; padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
+        </div>
+        <div id="mobile-filters-container"></div>
+        <div id="mobile-filters-fallback" style="display: none; margin: 15px 0;">
+            <a href="/masini-de-vanzare/" style="display: inline-block; background: #d32f2f; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">Vezi mașinile de vânzare</a>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <button id="apply-filters" type="button" style="flex: 1; background: #d32f2f; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; -webkit-tap-highlight-color: transparent;">Caută</button>
+            <button id="clear-filters" type="button" style="flex: 1; background: #666; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; -webkit-tap-highlight-color: transparent;">Șterge filtrele</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Desktop: ascunde iconița */
+@media (min-width: 769px) {
+    #mobile-search-icon { display: none !important; }
+}
+
+/* Mobil: arată iconița (pe toate paginile; dacă vrei doar Home + Mașini, vezi instrucțiunile din fișier) */
+@media (max-width: 768px) {
+    #mobile-search-icon { display: flex !important; }
+    #mobile-search-icon:active { transform: scale(0.95); }
+}
+
+#mobile-search-overlay { animation: fadeIn 0.3s ease; }
+#mobile-search-overlay > div { animation: slideUp 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+
+<script>
+(function() {
+    'use strict';
+    function initMobileSearch() {
+        var searchIcon = document.getElementById('mobile-search-icon');
+        var overlay = document.getElementById('mobile-search-overlay');
+        var closeBtn = document.getElementById('close-search-overlay');
+        var applyBtn = document.getElementById('apply-filters');
+        var clearBtn = document.getElementById('clear-filters');
+        var filtersContainer = document.getElementById('mobile-filters-container');
+        var fallback = document.getElementById('mobile-filters-fallback');
+        if (!searchIcon || !overlay) return;
+
+        function copyFilters() {
+            if (!filtersContainer) return;
+            var existing = document.querySelector('[id*="searchandfilter"], .searchandfilter, [class*="search-filter"]');
+            if (existing) {
+                filtersContainer.innerHTML = existing.innerHTML;
+                if (fallback) fallback.style.display = 'none';
+            } else if (fallback) {
+                fallback.style.display = 'block';
+            }
+        }
+
+        function openOverlay(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            copyFilters();
+        }
+        function closeOverlay(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        searchIcon.addEventListener('click', openOverlay, false);
+        searchIcon.addEventListener('touchend', function(e) { e.preventDefault(); openOverlay(e); }, false);
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeOverlay, false);
+            closeBtn.addEventListener('touchend', function(e) { e.preventDefault(); closeOverlay(e); }, false);
+        }
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) closeOverlay(e); }, false);
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var overlayInputs = filtersContainer.querySelectorAll('input, select, textarea');
+                var original = document.querySelector('[id*="searchandfilter"], .searchandfilter, [class*="search-filter"]');
+                if (original) {
+                    var origInputs = original.querySelectorAll('input, select, textarea');
+                    overlayInputs.forEach(function(inp, i) {
+                        if (origInputs[i]) {
+                            if (inp.type === 'checkbox' || inp.type === 'radio') origInputs[i].checked = inp.checked;
+                            else origInputs[i].value = inp.value;
+                            origInputs[i].dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                    var form = original.closest('form');
+                    if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                }
+                closeOverlay(e);
+            }, false);
+        }
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                [filtersContainer, document.querySelector('[id*="searchandfilter"], .searchandfilter')].forEach(function(el) {
+                    if (!el) return;
+                    el.querySelectorAll('input, select, textarea').forEach(function(inp) {
+                        if (inp.type === 'checkbox' || inp.type === 'radio') inp.checked = false;
+                        else inp.value = '';
+                    });
+                });
+            }, false);
+        }
+        setTimeout(copyFilters, 500);
+        setTimeout(copyFilters, 1500);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMobileSearch);
+    else initMobileSearch();
+    setTimeout(initMobileSearch, 1000);
+})();
+</script></textarea>
+    <button class="btn" type="button" id="copiază">Copiază codul</button>
+    <div class="ok" id="ok">Cod copiat. Mergi în Elementor și apasă Ctrl+V în caseta HTML.</div>
+    <script>
+        document.getElementById('copiază').onclick = function() {
+            var ta = document.getElementById('cod');
+            ta.select();
+            ta.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(ta.value).then(function() {
+                document.getElementById('ok').style.display = 'inline-block';
+                setTimeout(function() { document.getElementById('ok').style.display = 'none'; }, 4000);
+            });
+        };
+    </script>
+</body>
+</html>

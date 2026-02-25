@@ -1,0 +1,30 @@
+/**
+ * Pagina "Masini de vanzare" – pe MOBIL: blocul de căutare/filtre mutat SUB mașini.
+ * Pe desktop rămâne deasupra (neschimbat).
+ */
+
+@media (max-width: 767px) {
+  /* Varianta 1: main are un singur div care conține atât filtre cât și lista de mașini */
+  body.page-slug-masini-de-vanzare main > div:has([id*="searchandfilter"]) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  body.page-slug-masini-de-vanzare main > div:has([id*="searchandfilter"]) > *:first-child {
+    order: 2 !important;
+  }
+  body.page-slug-masini-de-vanzare main > div:has([id*="searchandfilter"]) > *:last-child {
+    order: 1 !important;
+  }
+
+  /* Varianta 2: main are două secțiuni directe – prima filtre, a doua mașini */
+  body.page-slug-masini-de-vanzare main:has([id*="searchandfilter"]) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  body.page-slug-masini-de-vanzare main:has([id*="searchandfilter"]) > *:first-child {
+    order: 2 !important;
+  }
+  body.page-slug-masini-de-vanzare main:has([id*="searchandfilter"]) > *:last-child {
+    order: 1 !important;
+  }
+}

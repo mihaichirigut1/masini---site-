@@ -1,0 +1,90 @@
+add_action( 'wp_head', 'masini_mobile_filter_toggle_css', 99 );
+add_action( 'wp_footer', 'masini_mobile_filter_toggle_js', 99 );
+
+function masini_mobile_filter_toggle_css() {
+	if ( ! is_page( 'masini-de-vanzare' ) ) return;
+	?>
+<style id="masini-mobile-filter-toggle">
+@media (max-width: 768px) {
+	.masini-btn-cauta {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		background: #e63028;
+		color: #fff;
+		border: none;
+		border-radius: 6px;
+		padding: 7px 16px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		white-space: nowrap;
+		line-height: 1;
+		letter-spacing: 0.3px;
+		box-shadow: 0 2px 6px rgba(0,0,0,.15);
+		transition: background .2s;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.masini-btn-cauta:active { background: #c4221b; }
+	.masini-btn-cauta svg { width: 16px; height: 16px; fill: currentColor; }
+
+	.elementor-element-01b5d85 {
+		overflow: hidden !important;
+		max-height: 0 !important;
+		opacity: 0 !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+		transition: max-height .4s ease, opacity .3s ease, padding .3s ease, margin .3s ease !important;
+	}
+	.elementor-element-01b5d85.masini-filter-open {
+		max-height: 2000px !important;
+		opacity: 1 !important;
+		padding-top: 20px !important;
+		padding-bottom: 20px !important;
+	}
+}
+@media (min-width: 769px) {
+	.masini-btn-cauta { display: none !important; }
+}
+</style>
+	<?php
+}
+
+function masini_mobile_filter_toggle_js() {
+	if ( ! is_page( 'masini-de-vanzare' ) ) return;
+	?>
+<script id="masini-mobile-filter-toggle-js">
+(function() {
+	if (window.innerWidth > 768) return;
+
+	var headerRow = document.querySelector('.elementor-element-79ae6846');
+	var inner = headerRow ? (headerRow.querySelector('.e-con-inner') || headerRow) : null;
+	var filterEl = document.querySelector('.elementor-element-01b5d85');
+	if (!inner || !filterEl) return;
+
+	var btn = document.createElement('button');
+	btn.className = 'masini-btn-cauta';
+	btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Caută';
+	btn.setAttribute('aria-expanded', 'false');
+	btn.setAttribute('aria-label', 'Deschide filtrele de căutare');
+
+	var nav = inner.querySelector('.elementor-element-f597cd0');
+	if (nav) {
+		inner.insertBefore(btn, nav);
+	} else {
+		inner.appendChild(btn);
+	}
+
+	btn.addEventListener('click', function() {
+		var open = filterEl.classList.toggle('masini-filter-open');
+		btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+		if (open) {
+			filterEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
+	});
+})();
+</script>
+	<?php
+}

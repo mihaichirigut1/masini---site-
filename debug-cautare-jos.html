@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Debug cautare jos</title></head>
+<body>
+<h1>Verificare structură – Cautare sub mașini</h1>
+<p>Deschide pe <strong>calculator</strong> pagina <a href="https://masiniinratebaiamare.ro/masini-de-vanzare/" target="_blank">Masini de vanzare</a>, apoi apasă F12 → tab <strong>Console</strong> și lipește acest cod (tot blocul), apoi Enter:</p>
+<pre style="background:#f5f5f5; padding:1em; overflow:auto; font-size:12px;">
+(function(){
+  var form = document.querySelector('[id*="searchandfilter"]');
+  var main = document.querySelector('main');
+  var container = main || document.querySelector('#content') || document.querySelector('.elementor-inner') || document.body;
+  console.log('Form:', form ? 'GASIT' : 'NU');
+  console.log('main:', main ? 'GASIT' : 'NU');
+  console.log('Container:', container ? container.tagName + (container.className ? '.' + container.className.split(' ')[0] : '') : 'NU');
+  if (container) console.log('Container contine form?', container.contains(form));
+  if (form && container && container.contains(form)) {
+    var p = form.parentElement;
+    var path = [];
+    while (p && p !== container) {
+      path.push(p.tagName + (p.id ? '#'+p.id : '') + (p.className && typeof p.className === 'string' ? '.'+p.className.split(' ').slice(0,2).join('.') : ''));
+      if (p.parentElement === container) {
+        console.log('Copil direct al container care contine form:', p.tagName, p.className || p.id);
+        break;
+      }
+      p = p.parentElement;
+    }
+    console.log('Cale form -> container:', path.length, 'niveluri');
+  }
+})();
+</pre>
+<p>Copiază ce apare în consolă (Form: …, main: …, etc.) și trimite-le.</p>
+</body>
+</html>
